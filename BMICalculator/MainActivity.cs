@@ -6,16 +6,19 @@ using Android.Support.Design.Widget;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using Android.Content;
 
 namespace BMICalculator
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
-        // Creating instance objects of the view controls
-        Button calculateButton;
+        // Aaron Sanders: Creating instance objects of the view controls
+        Button calculateButton, resultsButton;
         TextView resultTextView;
         EditText heightEditText, weightEditText;
+
+        float bmi = 20.0f;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -25,13 +28,22 @@ namespace BMICalculator
             Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
 
-            // Setting those instance objects to the view controls I created
+            // Aaron Sanders: Setting those instance objects to the view controls I created
             calculateButton = FindViewById<Button>(BMICalculator.Resource.Id.calculateButton);
+            resultsButton = FindViewById<Button>(BMICalculator.Resource.Id.resultsButton);
             resultTextView = FindViewById<TextView>(BMICalculator.Resource.Id.resultTextView);
             heightEditText = FindViewById<EditText>(BMICalculator.Resource.Id.heightEditText);
             weightEditText = FindViewById<EditText>(BMICalculator.Resource.Id.weightEditText);
 
             calculateButton.Click += CalculateButton_Click;
+            resultsButton.Click += ResultsButton_Click;
+        }
+
+        private void ResultsButton_Click(object sender, EventArgs e)
+        {
+            var intent = new Intent(this, typeof(BMIDetailsActivity));
+            intent.PutExtra("bmi_value", bmi);
+            StartActivity(intent);
         }
 
         private void CalculateButton_Click(object sender, EventArgs e)
@@ -39,7 +51,7 @@ namespace BMICalculator
             float height = float.Parse(heightEditText.Text);
             float weight = float.Parse(weightEditText.Text);
 
-            float bmi = weight / (height * height);
+            bmi = weight / (height * height);
 
             resultTextView.Text = bmi.ToString();
 
